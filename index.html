@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For Anani ❤️</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  overflow: hidden;
+  height: 100vh;
+  background: black;
+  color: white;
+}
+
+/* STARS */
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #1a1a40, #000);
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.6;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  from { transform: translateY(0); }
+  to { transform: translateY(100vh); }
+}
+
+/* MAIN */
+.container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 3;
+}
+
+h1 {
+  margin-bottom: 20px;
+  transition: opacity 0.6s ease;
+}
+
+button {
+  padding: 14px 30px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #00ffe5, #ff4d6d);
+  cursor: pointer;
+  box-shadow: 0 0 20px #00ffe5;
+}
+
+#countdown {
+  font-size: 7rem;
+  color: #00ffe5;
+  text-shadow: 0 0 25px #00ffe5;
+  display: none;
+}
+
+/* MESSAGE */
+.message {
+  font-size: 3rem;
+  color: #ff4d6d;
+  display: none;
+  text-shadow: 0 0 20px #ff4d6d;
+  animation: pop 1s ease forwards;
+}
+
+.sub-message {
+  font-size: 1.3rem;
+  margin-top: 15px;
+  color: #ffffffcc;
+  max-width: 600px;
+  line-height: 1.6;
+  display: none;
+  animation: fadeIn 2s ease forwards;
+}
+
+/* FOOTER */
+.footer {
+  position: absolute;
+  bottom: 20px;
+  font-size: 1rem;
+  color: #ffffffaa;
+  display: none;
+  text-align: center;
+  width: 100%;
+  z-index: 3;
+}
+
+/* HEART */
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* FIREWORKS */
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+<canvas id="fireworks"></canvas>
+
+<div class="container">
+  <h1 id="title">Something special is coming...</h1>
+
+  <button id="startBtn">Start Countdown</button>
+
+  <div id="countdown">10</div>
+
+  <div class="message" id="message"></div>
+
+  <div class="sub-message" id="subMessage">
+    Thank you for honoring me by being my girlfriend ❤️
+  </div>
+</div>
+
+<div class="footer" id="footer">
+  From your beloved boyfriend Pfano ❤️
+</div>
+
+<audio id="music" src="Esbukweni.mp3" loop></audio>
+
+<script>
+/* STARS */
+const stars = document.getElementById("stars");
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement("div");
+  s.classList.add("star");
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.top = Math.random() * 100 + "vh";
+  s.style.animationDuration = (Math.random() * 5 + 3) + "s";
+  stars.appendChild(s);
+}
+
+/* ELEMENTS */
+const startBtn = document.getElementById("startBtn");
+const countdownEl = document.getElementById("countdown");
+const messageEl = document.getElementById("message");
+const subMessageEl = document.getElementById("subMessage");
+const title = document.getElementById("title");
+const footer = document.getElementById("footer");
+const music = document.getElementById("music");
+
+let timeLeft = 10;
+let timer;
+
+/* START */
+startBtn.onclick = () => {
+  startBtn.style.display = "none";
+  countdownEl.style.display = "block";
+  music.play().catch(()=>{});
+
+  timer = setInterval(() => {
+    countdownEl.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+
+      // REMOVE intro text
+      title.style.opacity = "0";
+
+      setTimeout(() => {
+        title.style.display = "none";
+      }, 600);
+
+      countdownEl.style.display = "none";
+
+      showMessage();
+      startFireworks();
+
+      footer.style.display = "block";
+    }
+
+    timeLeft--;
+  }, 1000);
+};
+
+/* MESSAGE */
+function showMessage() {
+  messageEl.style.display = "block";
+  subMessageEl.style.display = "block";
+
+  typeWriter("I love you Anani ❤️", messageEl);
+}
+
+function typeWriter(text, el) {
+  let i = 0;
+  el.textContent = "";
+
+  const t = setInterval(() => {
+    el.textContent += text[i];
+    i++;
+    if (i >= text.length) clearInterval(t);
+  }, 100);
+}
+
+/* FIREWORKS */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function burst(x, y) {
+  for (let i = 0; i < 100; i++) {
+    particles.push({
+      x,
+      y,
+      angle: Math.random() * Math.PI * 2,
+      speed: Math.random() * 6 + 2,
+      alpha: 1,
+      size: Math.random() * 3 + 1
+    });
+  }
+}
+
+function startFireworks() {
+  setInterval(() => {
+    burst(
+      Math.random() * canvas.width,
+      Math.random() * canvas.height / 2
+    );
+  }, 500);
+}
+
+function animate() {
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((p, i) => {
+    p.x += Math.cos(p.angle) * p.speed;
+    p.y += Math.sin(p.angle) * p.speed;
+    p.alpha -= 0.01;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,100,150,${p.alpha})`;
+    ctx.fill();
+
+    if (p.alpha <= 0) particles.splice(i, 1);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
